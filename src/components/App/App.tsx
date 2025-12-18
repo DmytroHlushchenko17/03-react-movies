@@ -2,7 +2,7 @@ import SearchBar from "../SearchBar/SearchBar";
 import MovieGrid from "../MovieGrid/MovieGrid";
 import Loader from "../Loader/Loader";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
-import type { Movie } from "../types/movie";
+import type { Movie } from "../../types/movie";
 import { useState } from "react";
 import { fetchMovies } from "../../services/movieService";
 import MovieModal from "../MovieModal/MovieModal";
@@ -36,7 +36,7 @@ export default function App() {
       }
 
       setMovies(results);
-    } catch (error) {
+    } catch {
       setError(true);
       toast.error("Error!!!");
     } finally {
@@ -47,9 +47,9 @@ export default function App() {
     <>
       <SearchBar onSubmit={handleSearch} />
       <Toaster position="top-center" reverseOrder={false} />
-      <MovieGrid movies={movies} onSelect={openModal} />
       {loading && <Loader />}
       {error && <ErrorMessage />}
+      {movies.length > 0 && !loading && <MovieGrid movies={movies} onSelect={openModal} />}
       {selectedMovie && (
         <MovieModal
           movie={selectedMovie}

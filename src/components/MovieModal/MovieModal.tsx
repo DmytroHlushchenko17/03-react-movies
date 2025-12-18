@@ -1,4 +1,6 @@
-import type { Movie } from "../types/movie";
+import { useEffect } from "react";
+import { createPortal } from "react-dom";
+import type { Movie } from "../../types/movie";
 import css from "./MovieModal.module.css";
 
 interface MovieModalProps {
@@ -7,12 +9,29 @@ interface MovieModalProps {
 }
 
 export default function MovieModal({ onClose, movie }: MovieModalProps) {
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === "Escape") {
+        onClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "unset";
+    };
+  }, [onClose]);
+
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       onClose();
     }
   };
-  return (
+
+  return createPortal(
     <div
       className={css.backdrop}
       onClick={handleBackdropClick}
@@ -31,8 +50,8 @@ export default function MovieModal({ onClose, movie }: MovieModalProps) {
         <img
           src={
             movie.backdrop_path
-              ? `image.tmdb.org{movie.backdrop_path}`
-              : `image.tmdb.org{movie.poster_path}`
+              ? `https://image.tmdb.org/t/p/w500/${movie.backdrop_path}`
+              : `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
           }
           alt={movie.title}
           className={css.image}
@@ -51,6 +70,7 @@ export default function MovieModal({ onClose, movie }: MovieModalProps) {
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
