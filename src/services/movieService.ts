@@ -11,20 +11,17 @@ interface MovieResponse {
 }
 
 export const fetchMovies = async (query: string): Promise<Movie[]> => {
-  const response = await axios.get<MovieResponse>(
-    `${API_URL}/search/movie`,
-    {
-      params: {
-        query,
-        include_adult: false,
-        language: "en-US",
-        page: 1,
-      },
-      headers: {
-        Authorization: `Bearer ${import.meta.env.VITE_TMDB_TOKEN}`,
-        Accept: "application/json",
-      },
-    }
-  );
+  const response = await axios.get<MovieResponse>(`${API_URL}/search/movie`, {
+    params: {
+      query,
+      include_adult: false,
+      language: "en-US",
+      page: 1,
+    },
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${import.meta.env.VITE_TMDB_TOKEN}`,
+    },
+  });
   return response.data.results;
 };
